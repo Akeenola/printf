@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <stdarg.h>
-
+/**
+ * In this program, the printNumbers function takes an integer count as its first argument 
+ * which indicates the number of integers that will follow. 
+ *   
+ * It then uses the va_list, va_start, and va_arg macros from stdarg.h to iterate through the variable arguments and print them. 
+ * The main function demonstrates how to call print numbers with different sets of integers.
+ */
 void printNumbers(int count, ...) {
     va_list args;
     va_start(args, count);
