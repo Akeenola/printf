@@ -1,247 +1,132 @@
 #include "main.h"
-#include <unistd.h>
-#include <stdio.h>
+
 /**
- * print_char - writes the character c to stdout
- * @arg: argument
+ * print_char - prints character
+ * @ap: argument pointer
+ * @params: the parameters struct
  *
- * Return: On success 1.
- * On error, -1 is returned, and errno is set appropriately.
+ * Return: number chars printed
  */
-int print_char(va_list arg)
+int print_char(va_list ap, params_t *params)
 {
-	return (_putchar(va_arg(arg, int)));
+	char pad_char = ' ';
+	unsigned int pad = 1, sum = 0, ch = va_arg(ap, int);
+
+	if (params->minus_flag)
+		sum += _putchar(ch);
+	while (pad++ < params->width)
+		sum += _putchar(pad_char);
+	if (!params->minus_flag)
+		sum += _putchar(ch);
+	return (sum);
 }
 
 /**
- * print_int - prints an integer.
- * @arg: argument
- * Return: 0
- */
-
-int print_int(va_list arg)
-{
-
-unsigned int divisor = 1, i, resp, charPrinted = 0;
-int n = va_arg(arg, int);
-
-if (n < 0)
-{
-	_putchar('-');
-	charPrinted++;
-	n *= -1;
-}
-
-for (i = 0; n / divisor > 9; i++, divisor *= 10)
-;
-
-for (; divisor >= 1; n %= divisor, divisor /= 10, charPrinted++)
-{
-	resp = n / divisor;
-	_putchar('0' + resp);
-}
-return (charPrinted);
-}
-
-
-
-/**
- * print_STR - prints a string with a `S` (upper case) specificer
- * @arg: argument
- * Return: number of character printed
- */
-
-int print_STR(va_list arg)
-{
-int i;
-char *str = va_arg(arg, char*);
-
-if (str == NULL)
-	str = "(null)";
-else if (*str == '\0')
-	return (-1);
-
-for (i = 0; str[i]; i++)
-{
-	if ((str[i] < 32 && str[i] > 0) || str[i] >= 127)
-	{
-		_putchar('\\');
-		_putchar('x');
-		if (i < 16)
-			_putchar('0');
-
-		print_unsignedIntToHex(str[i], 'A');
-	}
-	else
-		_putchar(str[i]);
-}
-
-return (i);
-}
-
-/**
- * print_str - prints a string with a `s` (lower case) specifier
- * @arg: argument
- * Return: number of character printed
- */
-
-int print_str(va_list arg)
-{
-int i;
-char *str = va_arg(arg, char*);
-
-if (str == NULL)
-	str = "(null)";
-else if (*str == '\0')
-	return (-1);
-
-for (i = 0; str[i]; i++)
-	_putchar(str[i]);
-
-return (i);
-}
-
-/**
- * print_unsigned - prints an unsigned int.
- * @arg: argument
- * Return: 0
- */
-
-int print_unsigned(va_list arg)
-{
-int divisor = 1, i, resp;
-unsigned int n = va_arg(arg, unsigned int);
-
-for (i = 0; n / divisor > 9; i++, divisor *= 10)
-;
-
-for (; divisor >= 1; n %= divisor, divisor /= 10)
-{
-	resp = n / divisor;
-	_putchar('0' + resp);
-}
-return (i + 1);
-}#include "main.h"
-#include <unistd.h>
-#include <stdio.h>
-/**
- * print_char - writes the character c to stdout
- * @arg: argument
+ * print_int - prints integer
+ * @ap: argument pointer
+ * @params: the parameters struct
  *
- * Return: On success 1.
- * On error, -1 is returned, and errno is set appropriately.
+ * Return: number chars printed
  */
-int print_char(va_list arg)
+int print_int(va_list ap, params_t *params)
 {
-	return (_putchar(va_arg(arg, int)));
-}
+	long l;
 
-/**
- * print_int - prints an integer.
- * @arg: argument
- * Return: 0
- */
-
-int print_int(va_list arg)
-{
-
-unsigned int divisor = 1, i, resp, charPrinted = 0;
-int n = va_arg(arg, int);
-
-if (n < 0)
-{
-	_putchar('-');
-	charPrinted++;
-	n *= -1;
-}
-
-for (i = 0; n / divisor > 9; i++, divisor *= 10)
-;
-
-for (; divisor >= 1; n %= divisor, divisor /= 10, charPrinted++)
-{
-	resp = n / divisor;
-	_putchar('0' + resp);
-}
-return (charPrinted);
-}
-
-
-
-/**
- * print_STR - prints a string with a `S` (upper case) specificer
- * @arg: argument
- * Return: number of character printed
- */
-
-int print_STR(va_list arg)
-{
-int i;
-char *str = va_arg(arg, char*);
-
-if (str == NULL)
-	str = "(null)";
-else if (*str == '\0')
-	return (-1);
-
-for (i = 0; str[i]; i++)
-{
-	if ((str[i] < 32 && str[i] > 0) || str[i] >= 127)
-	{
-		_putchar('\\');
-		_putchar('x');
-		if (i < 16)
-			_putchar('0');
-
-		print_unsignedIntToHex(str[i], 'A');
-	}
+	if (params->l_modifier)
+		l = va_arg(ap, long);
+	else if (params->h_modifier)
+		l = (short int)va_arg(ap, int);
 	else
-		_putchar(str[i]);
-}
-
-return (i);
-}
-
-/**
- * print_str - prints a string with a `s` (lower case) specifier
- * @arg: argument
- * Return: number of character printed
- */
-
-int print_str(va_list arg)
-{
-int i;
-char *str = va_arg(arg, char*);
-
-if (str == NULL)
-	str = "(null)";
-else if (*str == '\0')
-	return (-1);
-
-for (i = 0; str[i]; i++)
-	_putchar(str[i]);
-
-return (i);
+		l = (int)va_arg(ap, int);
+	return (print_number(convert(l, 10, 0, params), params));
 }
 
 /**
- * print_unsigned - prints an unsigned int.
- * @arg: argument
- * Return: 0
+ * print_string - prints string
+ * @ap: argument pointer
+ * @params: the parameters struct
+ *
+ * Return: number chars printed
  */
-
-int print_unsigned(va_list arg)
+int print_string(va_list ap, params_t *params)
 {
-int divisor = 1, i, resp;
-unsigned int n = va_arg(arg, unsigned int);
+	char *str = va_arg(ap, char *), pad_char = ' ';
+	unsigned int pad = 0, sum = 0, i = 0, j;
 
-for (i = 0; n / divisor > 9; i++, divisor *= 10)
-;
+	(void)params;
+	switch ((int)(!str))
+		case 1:
+			str = NULL_STRING;
 
-for (; divisor >= 1; n %= divisor, divisor /= 10)
-{
-	resp = n / divisor;
-	_putchar('0' + resp);
+	j = pad = _strlen(str);
+	if (params->precision < pad)
+		j = pad = params->precision;
+
+	if (params->minus_flag)
+	{
+		if (params->precision != UINT_MAX)
+			for (i = 0; i < pad; i++)
+				sum += _putchar(*str++);
+		else
+			sum += _puts(str);
+	}
+	while (j++ < params->width)
+		sum += _putchar(pad_char);
+	if (!params->minus_flag)
+	{
+		if (params->precision != UINT_MAX)
+			for (i = 0; i < pad; i++)
+				sum += _putchar(*str++);
+		else
+			sum += _puts(str);
+	}
+	return (sum);
 }
-return (i + 1);
+
+/**
+ * print_percent - prints string
+ * @ap: argument pointer
+ * @params: the parameters struct
+ *
+ * Return: number chars printed
+ */
+int print_percent(va_list ap, params_t *params)
+{
+	(void)ap;
+	(void)params;
+	return (_putchar('%'));
+}
+
+/**
+ * print_S - custom format specifier
+ * @ap: argument pointer
+ * @params: the parameters struct
+ *
+ * Return: number chars printed
+ */
+int print_S(va_list ap, params_t *params)
+{
+	char *str = va_arg(ap, char *);
+	char *hex;
+	int sum = 0;
+
+	if ((int)(!str))
+		return (_puts(NULL_STRING));
+	for (; *str; str++)
+	{
+		if ((*str > 0 && *str < 32) || *str >= 127)
+		{
+			sum += _putchar('\\');
+			sum += _putchar('x');
+			hex = convert(*str, 16, 0, params);
+			if (!hex[1])
+				sum += _putchar('0');
+			sum += _puts(hex);
+		}
+		else
+		{
+			sum += _putchar(*str);
+		}
+	}
+	return (sum);
 }
